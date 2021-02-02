@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using SystemBase.Models;
+using SystemBase.Web.Models;
 
-namespace SystemBase.Controllers
+namespace SystemBase.Web.Controllers
 {
     public class HomeController : Controller
     {
