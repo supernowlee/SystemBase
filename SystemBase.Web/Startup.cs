@@ -8,11 +8,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SystemBase.Repository;
+using Microsoft.EntityFrameworkCore.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using SystemBase.Repository.Interfaces;
+using SystemBase.Repository.Models;
+using SystemBase.Repository.Repositories;
 
 namespace SystemBase.Web
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,6 +34,19 @@ namespace SystemBase.Web
 
             // Di 注入
             services.AddMvc();
+
+            services.AddDbContext<StaffContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+            services.AddScoped<IRepository<Staff, int>, StaffRepository>();
+        }
+
+        public void Configure(IApplicationBuilder app, StaffContext dbContext)
+        {
+            // 建立資料庫            
+            dbContext.Database.EnsureCreated();
+            app.UseMvcWithDefaultRoute();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

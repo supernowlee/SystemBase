@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -22,5 +23,14 @@ namespace SystemBase.Web
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((webHostBuilder, configurationBinder) =>
+            {
+                configurationBinder.AddJsonFile("DbConnection.json", optional: true);
+            })
+            .UseStartup<Startup>()
+            .Build();
     }
 }
