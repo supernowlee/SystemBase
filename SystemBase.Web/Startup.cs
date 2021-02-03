@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using SystemBase.Repository.Interfaces;
 using SystemBase.Repository.Models;
 using SystemBase.Repository.Repositories;
+using SystemBase.Service.Interfaces;
+using SystemBase.Service.Services;
 
 namespace SystemBase.Web
 {
@@ -40,6 +42,7 @@ namespace SystemBase.Web
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddScoped<IRepository<Staff, int>, StaffRepository>();
+            services.AddScoped<IStaffService, StaffService>();
         }
 
         public void Configure(IApplicationBuilder app, StaffContext dbContext)
