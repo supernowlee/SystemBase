@@ -1,37 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using SystemBase.Repository;
 using SystemBase.Repository.Models;
-using SystemBase.Web.Models;
+using SystemBase.Service.Interfaces;
 
 namespace SystemBase.Web.Controllers
 {
-    [Route("api/[controller]s")]
+    [Route("api/[controller]")]
     public class StaffController : Controller
     {
         private readonly ILogger<StaffController> _logger;
 
-        private readonly StaffContext Reposty;
+        private readonly IStaffService Service;
 
-        public StaffController(ILogger<StaffController> logger, StaffContext staffReposty)
+        public StaffController(ILogger<StaffController> logger, IStaffService staffService)
         {
             _logger = logger;
-            Reposty = staffReposty;
+            Service = staffService;
         }
 
         [HttpGet]
-        public ResultModel Get(string q)
+        public ResultModel Get(string name)
         {
             var result = new ResultModel();
-            result.Data = Reposty.Users.Where(x => string.IsNullOrEmpty(q)
-                                                 || Regex.IsMatch(x.Name, q, RegexOptions.IgnoreCase));
+            result.Data = Service.GetByName(name);
             result.IsSuccess = true;
+
             return result;
         }
 
@@ -39,8 +32,9 @@ namespace SystemBase.Web.Controllers
         public ResultModel Get(int id)
         {
             var result = new ResultModel();
-            result.Data = Reposty.Users.SingleOrDefault(x => x.Id == id);
+            result.Data = Service.Get(id);
             result.IsSuccess = true;
+
             return result;
         }
 
@@ -48,10 +42,9 @@ namespace SystemBase.Web.Controllers
         public ResultModel Post([FromBody] Staff user)
         {
             var result = new ResultModel();
-            Reposty.Users.Add(user);
-            Reposty.SaveChanges();
-            result.Data = user.Id;
+            result.Data = Service.Create(user);
             result.IsSuccess = true;
+
             return result;
         }
 
@@ -59,13 +52,13 @@ namespace SystemBase.Web.Controllers
         public ResultModel Put([FromBody] Staff user)
         {
             var result = new ResultModel();
-            var oriUser = Reposty.Users.SingleOrDefault(x => x.Id == user.Id);
+            var oriUser = Service.Get(user.Id);
             if (oriUser != null)
             {
-                Reposty.Entry(oriUser).CurrentValues.SetValues(user);
-                Reposty.SaveChanges();
+                Service.Update(user);
                 result.IsSuccess = true;
             }
+
             return result;
         }
 
@@ -73,13 +66,8 @@ namespace SystemBase.Web.Controllers
         public ResultModel Delete(int id)
         {
             var result = new ResultModel();
-            var oriUser = Reposty.Users.SingleOrDefault(x => x.Id == id);
-            if (oriUser != null)
-            {
-                Reposty.Users.Remove(oriUser);
-                Reposty.SaveChanges();
-                result.IsSuccess = true;
-            }
+            result.IsSuccess = Service.Delete(id);
+
             return result;
         }
     }

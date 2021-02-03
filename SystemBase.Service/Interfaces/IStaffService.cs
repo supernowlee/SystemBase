@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SystemBase.Repository.Models;
+﻿using SystemBase.Repository.Models;
 
 namespace SystemBase.Service.Interfaces
 {
-    public interface IStaffService 
+    public interface IStaffService
     {
         Staff GetByName(string name);
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using SystemBase.Repository.Interfaces;
 using SystemBase.Repository.Models;
 

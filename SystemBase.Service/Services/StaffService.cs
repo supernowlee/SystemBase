@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using SystemBase.Repository;
 using SystemBase.Repository.Interfaces;
 using SystemBase.Repository.Models;
 using SystemBase.Service.Interfaces;
