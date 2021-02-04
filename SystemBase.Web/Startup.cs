@@ -16,6 +16,8 @@ using SystemBase.Repository.Models;
 using SystemBase.Repository.Repositories;
 using SystemBase.Service.Interfaces;
 using SystemBase.Service.Services;
+using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 
 namespace SystemBase.Web
 {
@@ -50,6 +52,23 @@ namespace SystemBase.Web
             // 建立資料庫            
             dbContext.Database.EnsureCreated();
             app.UseMvcWithDefaultRoute();
+
+            // 設定錯誤處理
+            app.UseExceptionHandler(new ExceptionHandlerOptions()
+            {
+                ExceptionHandler = async context =>
+                {
+                    bool isApi = Regex.IsMatch(context.Request.Path.Value, "^/api/", RegexOptions.IgnoreCase);
+                    if (isApi)
+                    {
+                        context.Response.ContentType = "application/json";
+                        var json = @"{ ""Message"": ""Internal Server Error"" }";
+                        await context.Response.WriteAsync(json);
+                        return;
+                    }
+                    context.Response.Redirect("/error");
+                }
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
