@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace SystemBase.Web
     {
         public static void Main(string[] args)
         {
+            NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            BuildWebHost(args).Run();
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -31,6 +34,7 @@ namespace SystemBase.Web
                 configurationBinder.AddJsonFile("DbConnection.json", optional: true);
             })
             .UseStartup<Startup>()
+            .UseNLog()
             .Build();
     }
 }
